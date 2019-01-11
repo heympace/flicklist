@@ -8,7 +8,7 @@ var model = {
 
 var api = {
   root: "https://api.themoviedb.org/3",
-  token: "TODO" // TODO 0 put your api key here
+  token: "cd6d5589fa22eea2a18d231c2b8001fd" // TODO 0 put your api key here
 }
 
 
@@ -29,9 +29,9 @@ function discoverMovies(callback) {
 			
 			// TODO 2
 			// update the model, setting its .browseItems property equal to the movies we recieved in the response
-			
+			model.browseItems = response.results;
 			// invoke the callback function that was passed in. 
-			callback();
+			callback(response);
 		}
 	});
   
@@ -42,22 +42,38 @@ function discoverMovies(callback) {
  * re-renders the page with new content, based on the current state of the model
  */
 function render() {
+	var watchlistElement = $("#section-watchlist ul");
+  var browseElement = $("#section-browse ul");
+
   // TODO 7
   // clear everything from both lists
-  
+	watchlistElement.empty();
+  browseElement.empty();
   // TODO 6
   // for each movie on the user's watchlist, insert a list item into the <ul> in the watchlist section
-  
-  // for each movie on the current browse list, 
+	model.watchlistItems.forEach(function(movie) {
+    let title = $("<p></p>").text(movie.original_title);
+    let itemView = $("<li></li>").append(title);
+    watchlistElement.append(itemView);
+	});
+	  // for each movie on the current browse list, 
   model.browseItems.forEach(function(movie) {
 		// TODO 3
 		// insert a list item into the <ul> in the browse section
-		
+		let title = $("<p></p>").text(movie.original_title);
+			
 		// TODO 4
 		// the list item should include a button that says "Add to Watchlist"
-		
+		let button = $("<button></button>")
+		.text("Add to Watchlist")
+		.click(function() {
+			model.watchlistItems.push(movie);
+			render();
+		});
 		// TODO 5
 		// when the button is clicked, this movie should be added to the model's watchlist and render() should be called again
+		let itemView = $("<li></li>").append(title).append(button);
+    browseElement.append(itemView);
   });
   
 }
